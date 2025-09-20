@@ -4,7 +4,7 @@ from routes import auth_route, category_route, faq_route, resource_route, user_r
 
 app = FastAPI()
 
-origins = ["*"]
+origins = ["https://chatbot-frontend-seven-chi.vercel.app"]
 
 app.add_middleware(
     CORSMiddleware,
