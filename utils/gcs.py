@@ -27,21 +27,15 @@ if not BUCKET_NAME:
     raise RuntimeError("La variable de entorno BUCKET_NAME no está definida")
 
 
-def upload_file(file: UploadFile, destination_blob_name: str) -> str:
-    """
-    Sube un archivo a Google Cloud Storage y retorna la URL pública.
-    """
-    try:
-        bucket = storage_client.bucket(BUCKET_NAME)
-        blob = bucket.blob(destination_blob_name)
-        blob.upload_from_file(file.file, content_type=file.content_type)
-
-        # Hacerlo público si necesitas acceso público
-        blob.make_public()
-
-        return blob.public_url
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al subir archivo: {e}")
+def upload_file(file: UploadFile):
+    bucket = storage_client.bucket(BUCKET_NAME)
+    unique_name = generate_unique_filename(bucket, file.filename)
+    blob = bucket.blob(unique_name)
+    blob.upload_from_file(file.file, content_type=file.content_type)
+    return {
+        "url": f"https://storage.googleapis.com/{BUCKET_NAME}/{unique_name}",
+        "filename": unique_name,
+    }
 
 
 def delete_file(blob_name: str) -> None:
