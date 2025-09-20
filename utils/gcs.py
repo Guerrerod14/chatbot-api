@@ -26,6 +26,16 @@ BUCKET_NAME = os.getenv("BUCKET_NAME")
 if not BUCKET_NAME:
     raise RuntimeError("La variable de entorno BUCKET_NAME no está definida")
 
+def generate_unique_filename(bucket, filename):
+    base_name, ext = os.path.splitext(filename)
+    index = 1
+    new_filename = filename
+
+    while bucket.blob(new_filename).exists():
+        new_filename = f"{base_name}({index}){ext}"
+        index += 1
+
+    return new_filename
 
 def upload_file(file: UploadFile):
     bucket = storage_client.bucket(BUCKET_NAME)
