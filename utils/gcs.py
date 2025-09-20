@@ -15,7 +15,8 @@ credentials_dict = json.loads(credentials_json)
 
 # Corregir la clave privada (\n -> saltos de línea reales)
 credentials_dict["private_key"] = credentials_dict["private_key"].replace("\\n", "\n")
-
+print(credentials_dict["private_key"][:100])  # para ver inicio
+print(credentials_dict["private_key"][-50:])  # para ver fin
 # Crear credenciales y cliente de GCS
 credentials = service_account.Credentials.from_service_account_info(credentials_dict)
 storage_client = storage.Client(credentials=credentials, project=credentials.project_id)
